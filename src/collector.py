@@ -1,5 +1,5 @@
 import psutil
-class SystemData:
+class Collector:
     def __init__(self):
         self.cpu_utilization = self._get_cpu_utlization()
         self.memory_used = self._get_memory_usage()
