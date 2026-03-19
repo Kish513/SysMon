@@ -7,6 +7,20 @@ class Collector:
         self.memory_precentage = self._get_memory_precentage()
         self.disk_usage = self._get_all_partitions_usage()
     
+    def get_memory_used(self):
+        return self._get_memory_used()
+    
+    def get_memory_total(self):
+        return self._get_memory_total()
+       
+    def get_memory_precentage(self):
+        return self._get_memory_precentage()
+    
+    def get_disk_usage(self):
+        return self._get_all_partitions_usage()
+    
+    def get_cpu_utlization(self):
+        return self._get_cpu_utlization()
 
     def refresh_data(self):
         self.cpu_utilization = self._get_cpu_utlization()
@@ -82,11 +96,3 @@ class Collector:
             usage = psutil.disk_usage(partition.mountpoint)
             useges.append((partition.device, usage.used, usage.total))
         return useges
-
-
-
-#================= Main ===============
-
-if __name__ == "__main__":
-    system_data = SystemData()
-    print(system_data)

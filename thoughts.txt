@@ -1,1 +1,24 @@
 im just gonna start with a proof of concept with simple functions and i will revamp later
+
+
+
+
+PROBLAMS:
+becuase the rich-live moudle run on a while true loop(as was showed to me):
+
+with Live(refresh_per_second=1) as live:
+    while True:
+        table = Table(title="System Metrics")
+        table.add_column("Metric")
+        table.add_column("Value")
+        # ... populate with data from collector ...
+        live.update(table)
+        time.sleep(2)
+```
+its problamatic to also run the logger loop at the same time. becuase i want the display logic completley sepperate from logging logic i might need to thread this up.
+
+
+
+
+IDEAS TO MIGHT IMPLAMENT:
+turn each collector into a class

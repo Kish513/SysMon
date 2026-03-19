@@ -1,7 +1,8 @@
 from collector import Collector
 from display import DisplaySystem
-
+from logger import SystemLogger
 if __name__ == "__main__":
-    system_data = Collector()
-    display_system = DisplaySystem(system_data)
-    display_system.start_display()
+    system_collector = Collector()
+    display_system = DisplaySystem(system_collector)
+    system_logger = SystemLogger("log.csv", system_collector)
+    system_logger.start_logging()
