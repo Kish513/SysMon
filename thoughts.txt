@@ -20,5 +20,11 @@ its problamatic to also run the logger loop at the same time. becuase i want the
 
 
 
+
+Struggeling with the shutting down of the code. the rich lib is swalowing my ctrl-c (i think) (might be the threads also)
+
+
+
+
 IDEAS TO MIGHT IMPLAMENT:
 turn each collector into a class

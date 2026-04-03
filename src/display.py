@@ -4,52 +4,54 @@ from rich.columns import Columns
 import time
 BILLION = 10**9
 AMOUNT_OF_DIGITS_TO_DISPLAY = 2
-def choose_style(precentage):
-    if precentage <= 35:
+def choose_style(percentage):
+    if percentage  <= 35:
         return "green"
-    elif precentage <=75:
+    elif percentage  <=75:
         return "yellow"
     else:
         return "red"
     
 class DisplaySystem:
-    def __init__(self, collector):
+    def __init__(self, collector, interval=2):
+        self.interval = interval
         self.collector = collector
+        self.collector.refresh_data()
     
-    def start_display(self):
+    def start_display(self, stop_event):
         with Live(refresh_per_second=1) as live:
-            while True:
+            while not stop_event.is_set():
                 cpu_table = self.create_cpu_metrics()
                 memory_table = self.create_memory_metrics()
                 disk_table = self.create_disk_metrics()
                 columns = Columns([cpu_table, memory_table, disk_table], title="System Metrics")
                 live.update(columns)
                 self.collector.refresh_data()
-                time.sleep(2)
+                time.sleep(self.interval)
     
-    def create_cpu_metrics(self): #NEEDED TO BE POLISHED LATER INTO A NORMAL METRIX
+    def create_cpu_metrics(self) -> Table: #NEEDED TO BE POLISHED LATER INTO A NORMAL METRIX
         table = Table(title="CPU Metrics")
         table.add_column("CPU")
         table.add_column("UTALIZTION")
-        cpu_utlization = self.collector.get_cpu_utlization()
+        cpu_utlization = self.collector.cpu_utlization
         count = 1
-        for precentage in cpu_utlization:
-            table.add_row(f"CPU {count}", f"{precentage}%", style=choose_style(precentage))
+        for percentage in cpu_utlization:
+            table.add_row(f"CPU {count}", f"{percentage}%", style=choose_style(percentage))
             count += 1
         return table
     
-    def create_memory_metrics(self):
-        memory_precentage = self.collector.memory_precentage
-        memory_used = round((self.collector.get_memory_used() / BILLION), AMOUNT_OF_DIGITS_TO_DISPLAY)
-        memory_total = round((self.collector.get_memory_total() / BILLION), AMOUNT_OF_DIGITS_TO_DISPLAY)
+    def create_memory_metrics(self) -> Table:
+        memory_percentage  = self.collector.memory_percentage 
+        memory_used = round((self.collector.memory_used / BILLION), AMOUNT_OF_DIGITS_TO_DISPLAY)
+        memory_total = round((self.collector.memory_total / BILLION), AMOUNT_OF_DIGITS_TO_DISPLAY)
         table = Table(title="Memory Metrics")
         table.add_column("USED")
         table.add_column("TOTAL")
-        table.add_column("PRECENTAGE", style=choose_style(memory_precentage))
-        table.add_row(f"{memory_used} GB", f"{memory_total} GB", f"{memory_precentage}%")
+        table.add_column("PERCENTAGE", style=choose_style(memory_percentage))
+        table.add_row(f"{memory_used} GB", f"{memory_total} GB", f"{memory_percentage }%")
         return table
     
-    def create_disk_metrics(self):
+    def create_disk_metrics(self) -> Table:
         table = Table(title="Disk Metrics")
         table.add_column("DEVICE")
         table.add_column("USED")

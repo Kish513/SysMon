@@ -1,33 +1,37 @@
 import psutil
 class Collector:
     def __init__(self):
-        self.cpu_utilization = self._get_cpu_utlization()
-        self.memory_used = self._get_memory_usage()
-        self.memory_total = self._get_memory_total()
-        self.memory_precentage = self._get_memory_precentage()
-        self.disk_usage = self._get_all_partitions_usage()
+        self._cpu_utilization = self._get_cpu_utlization()
+        self._memory_used = self._get_memory_usage()
+        self._memory_total = self._get_memory_total()
+        self._memory_percentage = self._get_memory_percentage()
+        self._disk_usage = self._get_all_partitions_usage()
+
+
+    @property
+    def memory_used(self) -> int:
+        return self._memory_used
+    @property
+    def memory_total(self) -> int:
+        return self._memory_total
     
-    def get_memory_used(self):
-        return self._get_memory_used()
+    @property
+    def memory_percentage(self) -> int:
+        return self._memory_percentage
+    @property
+    def disk_usage(self) -> list[tuple]:
+        return self._disk_usage
     
-    def get_memory_total(self):
-        return self._get_memory_total()
-       
-    def get_memory_precentage(self):
-        return self._get_memory_precentage()
-    
-    def get_disk_usage(self):
-        return self._get_all_partitions_usage()
-    
-    def get_cpu_utlization(self):
-        return self._get_cpu_utlization()
+    @property
+    def cpu_utlization(self):
+        return self._cpu_utilization
 
     def refresh_data(self):
-        self.cpu_utilization = self._get_cpu_utlization()
-        self.memory_used = self._get_memory_used()
-        self.memory_total = self._get_memory_total()
-        self.memory_precentage = self._get_memory_precentage()
-        self.disk_usage = self._get_all_partitions_usage()
+        self._cpu_utilization = self._get_cpu_utlization()
+        self._memory_used = self._get_memory_used()
+        self._memory_total = self._get_memory_total()
+        self._memory_percentage  = self._get_memory_percentage()
+        self._disk_usage = self._get_all_partitions_usage()
     
     def __str__(self): #JUST FOR TESTING PURPOSES
         return f"CPU Utilization: {self._get_cpu_utlization()}%\n Memory Usage: {self._get_memory_used()} out of {self._get_memory_total()} ({self._get_memory_precentage()}%)\n Disk Usage: {self._get_all_partitions_usage()}"
@@ -35,7 +39,7 @@ class Collector:
     #============== CPU methods ===========
     def _get_cpu_utlization(self):
         """
-        Returns the current(0.1 second) cpu utlization precentage
+        Returns the current(0.1 second) cpu utlization percentage 
         par: None
         return: list[floats(?)]
         """
@@ -44,7 +48,7 @@ class Collector:
 
 
     #============== Memory methods =============
-    def _get_memory_usage(self):
+    def _get_memory_usage(self) -> (int, int):
         """
         returrn the current memory usage as a tuple
         par: None
@@ -52,7 +56,7 @@ class Collector:
         """
         return psutil.virtual_memory()
 
-    def _get_memory_used(self):
+    def _get_memory_used(self) -> int:
         """
         return get_memory_used 
         par: None
@@ -60,14 +64,14 @@ class Collector:
         """
         return self._get_memory_usage().used
         
-    def _get_memory_total(self):
+    def _get_memory_total(self) -> int:
         """
         return the total memory possibole
         par: None
         return: int
         """
         return self._get_memory_usage().total
-    def _get_memory_precentage(self):
+    def _get_memory_percentage(self) -> float:
         """
         return the precetnage of memory used
         par: None
@@ -84,7 +88,7 @@ class Collector:
         """
         return psutil.disk_partitions()
 
-    def _get_all_partitions_usage(self):
+    def _get_all_partitions_usage(self) -> list[tuple]:
         """
         return a listof all partitions and their usage
         par: None
